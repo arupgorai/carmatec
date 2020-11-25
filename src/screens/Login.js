@@ -6,6 +6,7 @@ import {
   Dimensions
 } from 'react-native';
 import {Container, Label, Content, Form, Item, Input, Icon, H2, Button, Toast} from 'native-base';
+import { setLogin, getLogin } from '../config/Auth';
 const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get('window');
 
 class Login extends React.Component {
@@ -36,13 +37,13 @@ class Login extends React.Component {
       const error = {};
 
       if (!email || email === '') {
-          error.email = 'Please Provide Email Id';
+        error.email = 'Please Provide Email Id';
       } else if (!pattern.test(String(email).toLowerCase())) {
-          error.email = 'Invalid Email Id';
+        error.email = 'Invalid Email Id';
       }
 
       if (!password || password === '') {
-          error.password = 'Please Provide Password';
+        error.password = 'Please Provide Password';
       }
       return error;
   }
