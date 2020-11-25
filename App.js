@@ -12,17 +12,18 @@ import {
   View,
   Text
 } from 'react-native';
-import Login from './src/screens/Login'
+import { Root } from 'native-base';
+
+import AppRouter from './src/routes/Routes';
 
 
 const App = () => {
   return (
-    <Login />
+    <Root>
+      <AppRouter />
+    </Root>
   );
 };
 
-const styles = StyleSheet.create({
-
-});
 
 export default App;
