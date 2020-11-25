@@ -3,20 +3,98 @@ import {
   Text,
   StyleSheet,
   View,
-  StatusBar,
-  Image,
-  BackHandler,
-  ActivityIndicator,
-  ScrollView,
+  Dimensions
 } from 'react-native';
-import {Container, Form, Item, Input, Icon, Button, Toast} from 'native-base';
+import {Container, Label, Content, Form, Item, Input, Icon, H2, Button, Toast} from 'native-base';
+const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get('window');
 
-const Login = () => {
-  return (
-    <View>
-      <Text>login component</Text>
-    </View>
-  )
+class Login extends React.Component {
+  state = {
+    email: '',
+    password: '',
+    error: null
+  }
+  submitHandler = () => {
+    let { email, password } = this.state;
+
+    // trim usernaem & pass
+    email = email.trim();
+    password = password.trim();
+
+    const err = this.signInValidator(email, password);
+    if (Object.keys(err).length > 0) {
+      this.setState({ error: err });
+    } else {
+      console.log({email, password});
+    }
+  }
+
+  // validation for email & password
+  signInValidator(email, password) {
+      // email validator pattern
+      const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const error = {};
+
+      if (!email || email === '') {
+          error.email = 'Please Provide Email Id';
+      } else if (!pattern.test(String(email).toLowerCase())) {
+          error.email = 'Invalid Email Id';
+      }
+
+      if (!password || password === '') {
+          error.password = 'Please Provide Password';
+      }
+      return error;
+  }
+
+  render() {
+    const {email, password, error} = this.state;
+    return (
+      <Container>
+        <Content padder>
+          <View style={{paddingVertical: 70, borderWidth: 1, borderColor: 'lightgray', paddingHorizontal: 10}}>
+            <H2 style={{textAlign: 'center'}}>Sign In</H2>
+            <View style={{marginTop: 35}}>
+              <Form>
+                <Item fixedLabel>
+                  <Label>Email</Label>
+                  <Input
+                    value={email}
+                    onChangeText={(email) => this.setState({email})}
+                  />
+                </Item>
+                {error && error.email && <Text style={styles.error }>{error.email}</Text>}
+                <Item fixedLabel>
+                  <Label>Password</Label>
+                  <Input
+                    value={password}
+                    secureTextEntry={true}
+                    onChangeText={(password) => this.setState({password})}
+                  />
+                </Item>
+                {error && error.password && <Text style={styles.error }>{error.password}</Text>}
+                <Button block warning style={{marginTop: 25}} onPress={this.submitHandler}>
+                  <Text>Sign In</Text>
+                </Button>
+              </Form>
+            </View>
+            <View style={{marginTop: 25, flexDirection:'row', alignItems: 'center', justifyContent: 'center'}}>
+              <Text>NEED AN ACCOUNT ? </Text>
+              <Text style={{fontWeight: 'bold'}}>SIGN UP</Text>
+            </View>
+          </View>
+        </Content>
+      </Container>
+    )
+  }
 }
+
+const styles = StyleSheet.create({
+  error: {
+    marginLeft: 15,
+    fontSize: 12,
+    color: 'red'
+  }
+});
 
 export default Login;

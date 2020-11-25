@@ -12,18 +12,12 @@ import {
   View,
   Text
 } from 'react-native';
-import {
-
-  Icon,
-} from 'native-base';
+import Login from './src/screens/Login'
 
 
 const App = () => {
   return (
-    <View>
-      <Text>hello world</Text>
-      <Icon name="filter" type="MaterialCommunityIcons"></Icon>
-    </View>
+    <Login />
   );
 };
 
