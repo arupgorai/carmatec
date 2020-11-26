@@ -3,7 +3,8 @@ import {
   Text,
   StyleSheet,
   View,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
 import {Container, Label, Content, Form, Item, Input, Icon, H2, Button, Toast} from 'native-base';
 import { setLogin, getLogin } from '../config/Auth';
@@ -13,10 +14,13 @@ class Login extends React.Component {
   state = {
     email: '',
     password: '',
+    loading: false,
+    refreshing: true,
     error: null
   }
   submitHandler = () => {
-    let { email, password } = this.state;
+    let { email, password, loading } = this.state;
+    this.setState({loading: true});
 
     // trim usernaem & pass
     email = email.trim();
@@ -24,10 +28,36 @@ class Login extends React.Component {
 
     const err = this.signInValidator(email, password);
     if (Object.keys(err).length > 0) {
-      this.setState({ error: err });
+      this.setState({ error: err, loading: false });
     } else {
-      console.log({email, password});
+      const user = {email, password}
+      if (email == 'test@test.com' && password == 'password') {
+        setLogin(user)
+          .then(() => {
+            this.props.navigation.navigate('Products');
+            this.setState({loading: false});
+          })
+          .catch(er => er && console.log(er))
+      } else {
+        Toast.show({
+          text: 'Invalid Email or Password',
+          duration: 3000
+        });
+        this.setState({loading: false});
+      }
     }
+  }
+
+  componentDidMount = () => {
+    getLogin()
+      .then(user => {
+        if (user !== null) {
+          this.props.navigation.replace('Products');
+        } else {
+          this.setState({refreshing: false});
+        }
+      })
+      .catch(err => err && console.log(err));
   }
 
   // validation for email & password
@@ -49,42 +79,50 @@ class Login extends React.Component {
   }
 
   render() {
-    const {email, password, error} = this.state;
+    const {email, password, error, loading, refreshing} = this.state;
     return (
       <Container>
-        <Content padder>
-          <View style={{paddingVertical: 70, borderWidth: 1, borderColor: 'lightgray', paddingHorizontal: 10}}>
-            <H2 style={{textAlign: 'center'}}>Sign In</H2>
-            <View style={{marginTop: 35}}>
-              <Form>
-                <Item fixedLabel>
-                  <Label>Email</Label>
-                  <Input
-                    value={email}
-                    onChangeText={(email) => this.setState({email})}
-                  />
-                </Item>
-                {error && error.email && <Text style={styles.error }>{error.email}</Text>}
-                <Item fixedLabel>
-                  <Label>Password</Label>
-                  <Input
-                    value={password}
-                    secureTextEntry={true}
-                    onChangeText={(password) => this.setState({password})}
-                  />
-                </Item>
-                {error && error.password && <Text style={styles.error }>{error.password}</Text>}
-                <Button block warning style={{marginTop: 25}} onPress={this.submitHandler}>
-                  <Text>Sign In</Text>
-                </Button>
-              </Form>
-            </View>
-            <View style={{marginTop: 25, flexDirection:'row', alignItems: 'center', justifyContent: 'center'}}>
-              <Text>NEED AN ACCOUNT ? </Text>
-              <Text style={{fontWeight: 'bold'}}>SIGN UP</Text>
-            </View>
+        {refreshing && (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size="large" color="orange" />
+            <Text>Loading..</Text>
           </View>
-        </Content>
+        )}
+        {!refreshing && (
+          <Content padder>
+            <View style={{paddingVertical: 70, borderWidth: 1, borderColor: 'lightgray', paddingHorizontal: 10}}>
+              <H2 style={{textAlign: 'center'}}>Sign In</H2>
+              <View style={{marginTop: 35}}>
+                <Form>
+                  <Item fixedLabel>
+                    <Label>Email</Label>
+                    <Input
+                      value={email}
+                      onChangeText={(email) => this.setState({email})}
+                    />
+                  </Item>
+                  {error && error.email && <Text style={styles.error }>{error.email}</Text>}
+                  <Item fixedLabel>
+                    <Label>Password</Label>
+                    <Input
+                      value={password}
+                      secureTextEntry={true}
+                      onChangeText={(password) => this.setState({password})}
+                    />
+                  </Item>
+                  {error && error.password && <Text style={styles.error }>{error.password}</Text>}
+                  <Button block warning style={{marginTop: 25}} onPress={this.submitHandler}>
+                    <Text>{loading ? 'Signing in..' : 'Sign In'}</Text>
+                  </Button>
+                </Form>
+              </View>
+              <View style={{marginTop: 25, flexDirection:'row', alignItems: 'center', justifyContent: 'center'}}>
+                <Text>NEED AN ACCOUNT ? </Text>
+                <Text style={{fontWeight: 'bold'}}>SIGN UP</Text>
+              </View>
+            </View>
+          </Content>
+        )}
       </Container>
     )
   }
