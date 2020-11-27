@@ -10,7 +10,7 @@ To start the project, follow the below steps :-
 step 1 :- Clone the repo from github using below link
 https://github.com/arupgorai/carmatec.git
 
-step 2 :- install the node_modules
-yarn install
+step 2 :- install the node_modules using
+`yarn install`
 
 step 3 :- Run app using `npx react-native run-android` command;
