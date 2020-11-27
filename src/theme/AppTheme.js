@@ -3,5 +3,7 @@ export const Theme = {
     red: 'red',
     gray: 'gray',
     green: 'green',
-    orange: 'orange'
+    orange: 'orange',
+    lightgray: 'lightgray',
+    blue: 'blue',
 }

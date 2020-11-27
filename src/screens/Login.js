@@ -89,7 +89,7 @@ class Login extends React.Component {
           </View>
         )}
         {!refreshing && (
-          <Content padder>
+          <Content padder contentContainerStyle={{justifyContent: 'center', height: SCREEN_HEIGHT}}>
             <View style={{paddingVertical: 70, borderWidth: 1, borderColor: 'lightgray', paddingHorizontal: 10}}>
               <H2 style={{textAlign: 'center'}}>Sign In</H2>
               <View style={{marginTop: 35}}>

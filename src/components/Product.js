@@ -13,7 +13,7 @@ class Product extends React.Component {
   render() {
     const {productName, image, star, onPrice, offPrice, discount} = this.props;
     return (
-      <TouchableOpacity activeOpacity={.7} style={styles.productBox}>
+      <TouchableOpacity activeOpacity={.7} style={styles.productBox} onPress={() => this.props.navigation.navigate('ProductDetail')}>
         <View>
           <View style={styles.pTop}>
             <View

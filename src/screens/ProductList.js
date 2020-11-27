@@ -10,7 +10,7 @@ import {
 import {Container, Header, H1, Title, Left, Body, Right, Content, Icon, Button, Footer, FooterTab} from 'native-base';
 import {Theme} from '../theme/AppTheme';
 import Product from '../components/Product';
-import { setLogin, getLogin } from '../config/Auth';
+import { setLogin, getLogin, clearLogin } from '../config/Auth';
 const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get('window');
 const DATA = [
   {
@@ -57,6 +57,7 @@ class ProductList extends React.Component {
   }
 
   componentDidMount = () => {
+    // clearLogin().then().catch();
     getLogin()
       .then(user => {
         if (user !== null) {
@@ -69,7 +70,7 @@ class ProductList extends React.Component {
   }
 
  renderItem = ({ item }) => (
-  <Product {...item} />
+  <Product {...item} {...this.props} />
  );
   render() {
     const {isLoggedIn} = this.state;
